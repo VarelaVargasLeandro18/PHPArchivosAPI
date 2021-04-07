@@ -43,11 +43,13 @@
 
         }
 
+        // ========= GETTERS =========
+
         /**
          * Getter del atributo str_pathToFile.
          * @return String atributo str_pathToFile.
          */
-        public function getPathToFile() {
+        public final function getPathToFile() {
             return $this->str_pathToFile;
         }
 
@@ -55,8 +57,28 @@
          * Getter del atributo str_fileType.
          * @return String atributo str_fileType.
          */
-        public function getFileType() {
+        public final function getFileType() {
             return $this->str_fileType;
+        }
+
+        // ========= FIN GETTERS =========
+
+        /**
+         * Función que permite la creación u apertura del archivo (de ser posible).
+         * @param String $modo modo en el que el archivo se abrirá.
+         * @return FILE|bool puntero al archivo. En caso de error devuelve false.
+         */
+        protected final function crear_abrirArchivo( $modo ) {
+            return fopen($this->str_pathToFile, $modo, false);
+        }
+
+        /**
+         * Función que permitirá cerrar un puntero al archivo-
+         * @param FILE $ar puntero al archivo.
+         * @return bool TRUE si se pudo cerrar el archivo. FALSE caso contrario.
+         */
+        protected final function cerrarArchivo( $ar ) {
+            return fclose($ar);
         }
 
     }
