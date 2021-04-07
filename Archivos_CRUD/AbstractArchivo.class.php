@@ -141,6 +141,15 @@
         }
 
         /**
+         * Función que permitirá rebobinar el archivo.
+         * @return bool TRUE si pudo realizarse la operación. FALSE caso contrario.
+         * @author Varela Vargas Leandro.
+         */
+        protected final function rewind() {
+            return rewind($this->file);
+        }
+
+        /**
          * Función que permitirá, de ser posible, la sobreescritura de una línea dada.
          * @param int $line_nr número de línea.
          * @param string $str nuevo valor de línea.
@@ -151,9 +160,7 @@
             $lines_count = 0;
             $this->readFile();
             $this->create_openFile("w");
-
             
-
         }
 
     }
