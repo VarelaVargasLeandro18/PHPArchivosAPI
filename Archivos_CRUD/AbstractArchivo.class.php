@@ -151,16 +151,26 @@
 
         /**
          * Función que permitirá, de ser posible, la sobreescritura de una línea dada.
-         * @param int $line_nr número de línea.
+         * @param int $line_nr número de línea, comenzando en línea 0.
          * @param string $str nuevo valor de línea.
          * @return bool TRUE si se ha logrado sobreescribir la línea. FALSE caso contrario.
          * @author Varela Vargas Leandro.
          */
         protected final function rewriteLine($line_nr, $str) {
             $lines_count = 0;
+            $ret = false;
             $this->readFile();
             $this->create_openFile("w");
-            
+            $this->rewind();
+
+            if ( $this->file_lines > $line_nr ) { // Si la cantidad de líneas del fichero es mayor a la línea deseada...
+                while ( $line_nr > $lines_count ) { // Adelantamos el cursor a otra línea.
+                    fgets($this->file);
+                }
+                
+                $ret = fwrite($this->file, $str);
+            }
+            return $ret > 0;
         }
 
     }
