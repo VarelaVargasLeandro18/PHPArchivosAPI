@@ -26,6 +26,12 @@
         private $str_mode;
 
         /**
+         * Atributo que contendrá el PUNTERO al archivo.
+         * @var FILE;
+         */
+        private $file;
+
+        /**
          * Función constructura de la clase.
          * @param String $str_pathToFile PATH del archivo.
          * @param String $str_fileType TIPO de archivo.
@@ -74,22 +80,22 @@
         /**
          * Función que permite la creación u apertura del archivo (de ser posible).
          * @param String $str_mode modo en el que el archivo se abrirá.
-         * @return FILE|bool puntero al archivo. En caso de error devuelve FALSE.
+         * @return bool TRUE en caso de éxito. Caso contrario FALSE.
          * @author Varela Vargas Leandro.
          */
         protected final function create_openFile( $str_mode ) {
             $this->str_mode = $str_mode;
-            return fopen($this->str_pathToFile, $str_mode);
+            $this->file = fopen($this->str_pathToFile, $str_mode);
+            return ( $this->file !== FALSE );
         }
 
         /**
          * Función que permitirá cerrar un puntero al archivo-
-         * @param FILE $file puntero al archivo.
          * @return bool TRUE si se pudo cerrar el archivo. FALSE caso contrario.
          * @author Varela Vargas Leandro.
          */
-        protected final function closeFile( $file ) {
-            return fclose($file);
+        protected final function closeFile() {
+            return fclose($this->file);
         }
 
         /**
@@ -99,8 +105,8 @@
          * @return bool TRUE si se pudo agregar. FALSE caso contrario.
          * @author Varela Vargas Leandro.
          */
-        public final function write_appendLine( $file, $str_line, $int_length = null ) {
-            fputs($file, $str_line . "\n", $int_length);
+        public final function write_appendLine( $str_line, $int_length = null ) {
+            fputs($this->file, $str_line . "\n", $int_length);
         }
 
     }
