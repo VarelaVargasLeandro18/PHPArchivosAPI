@@ -21,15 +21,21 @@
 
         /**
          * Atributo que contendrá el MODO en que se ha abierto el archivo.
-         * @var String;
+         * @var String
          */
         private $str_mode;
 
         /**
          * Atributo que contendrá el PUNTERO al archivo.
-         * @var Resource;
+         * @var Resource
          */
         private $file;
+
+        /**
+         * Atributo que contendrá la cantidad de líneas del archivo.
+         * @var int
+         */
+        private $file_lines;
 
         /**
          * Función constructura de la clase.
@@ -75,6 +81,12 @@
             return $this->str_fileType;
         }
 
+        /**
+         * Getter del atributo file_lines.
+         * @return int atributo file_lines.
+         * @author Varela Vargas Leandro.
+         */
+
         // ========= FIN GETTERS =========
 
         /**
@@ -88,11 +100,9 @@
             if ( isset($this->file) && $this->file instanceof resource )
                 fclose($this->file);
 
-                $this->str_mode = $str_mode;
-                $this->file = fopen($this->str_pathToFile, $str_mode);
-                return ( $this->file !== FALSE );
-            
-            return FALSE;
+            $this->str_mode = $str_mode;
+            $this->file = fopen($this->str_pathToFile, $str_mode);
+            return ( $this->file !== FALSE );
         }
 
         /**
@@ -112,7 +122,7 @@
          * @author Varela Vargas Leandro.
          */
         public final function write_appendLine( $str_line, $int_length = null ) {
-            if ( isset($this->file) )
+            if ( isset($this->file) && $this->mode != 'r' )
                 fputs($this->file, $str_line . "\n", $int_length);
             else
                 throw new Exception("El archivo no se abrió.");
@@ -121,9 +131,29 @@
         /**
          * Función que permitirá leer el documento completo. Si no está abierto lo abre automáticamente.
          * @return Array|bool un array con cada línea del documento. FALSE si no pudo leer el archivo.
+         * @author Varela Vargas Leandro.
          */
         protected final function readFile() {
-            return file( $this->str_pathToFile, FILE_IGNORE_NEW_LINES );
+            $ret = file( $this->str_pathToFile, FILE_IGNORE_NEW_LINES );
+            $this->file_lines = count($ret);
+
+            return $ret;
+        }
+
+        /**
+         * Función que permitirá, de ser posible, la sobreescritura de una línea dada.
+         * @param int $line_nr número de línea.
+         * @param string $str nuevo valor de línea.
+         * @return bool TRUE si se ha logrado sobreescribir la línea. FALSE caso contrario.
+         * @author Varela Vargas Leandro.
+         */
+        protected final function rewriteLine($line_nr, $str) {
+            $lines_count = 0;
+            $this->readFile();
+            $this->create_openFile("w");
+
+            
+
         }
 
     }
