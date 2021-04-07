@@ -24,6 +24,16 @@
 
         }
 
+        public function getPathToFile() {
+            return $this->str_pathToFile;
+        }
+
+        public function getFileType() {
+            return $this->str_fileType;
+        }
+
+        
+
     }
 
 ?>
