@@ -27,7 +27,7 @@
 
         /**
          * Atributo que contendrá el PUNTERO al archivo.
-         * @var FILE;
+         * @var Resource;
          */
         private $file;
 
@@ -84,6 +84,7 @@
          * @author Varela Vargas Leandro.
          */
         protected final function create_openFile( $str_mode ) {
+            fclose($this->file);
             $this->str_mode = $str_mode;
             $this->file = fopen($this->str_pathToFile, $str_mode);
             return ( $this->file !== FALSE );
@@ -107,6 +108,14 @@
          */
         public final function write_appendLine( $str_line, $int_length = null ) {
             fputs($this->file, $str_line . "\n", $int_length);
+        }
+
+        /**
+         * Función que permitirá leer el documento completo. Si no está abierto lo abre automáticamente.
+         * @return Array|bool un array con cada línea del documento. FALSE si no pudo leer el archivo.
+         */
+        protected final function readFile() {
+            return file( $this->file, FILE_IGNORE_NEW_LINES );
         }
 
     }
