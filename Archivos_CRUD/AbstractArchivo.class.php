@@ -182,12 +182,20 @@
          * Función que permitirá encontrar una línea que tenga una cadena de caracteres determinada.
          * Devuelve la primer coincidencia.
          * @param string $str Cadena a buscar.
-         * @return int Número de línea que contenga la cadena de caracteres especificada.
+         * @return int|bool Número de línea que contenga la cadena de caracteres especificada. FALSE si no encuentra nada.
          * @author Varela Vargas Leandro.
          */
         protected final function findNrLineWithStr($str) {
-            $file_array = $this->readFile();
-            return array_search($str, $file_array);
+            $file_array = file($this->str_pathToFile, FILE_IGNORE_NEW_LINES);
+            $ret = FALSE;
+
+            foreach ( $file_array as $key => $val ) {
+                if ( str_contains($val, $str) ) {
+                    $ret = $key;
+                    break;
+                }
+            }
+            return $ret;
         }
 
     }
