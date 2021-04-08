@@ -9,25 +9,25 @@
 
         /**
          * Atributo que contendrá el PATH hacia el archivo.
-         * @var String
+         * @var string
          */
         private $str_pathToFile;
 
         /**
          * Atributo que contendrá el TIPO de archivo.
-         * @var String
+         * @var string
          */
         private $str_fileType;
 
         /**
          * Atributo que contendrá el MODO en que se ha abierto el archivo.
-         * @var String
+         * @var string
          */
         private $str_mode;
 
         /**
          * Atributo que contendrá el PUNTERO al archivo.
-         * @var Resource
+         * @var resource
          */
         private $file;
 
@@ -39,8 +39,8 @@
 
         /**
          * Función constructura de la clase.
-         * @param String $str_pathToFile PATH del archivo.
-         * @param String $str_fileType TIPO de archivo.
+         * @param string $str_pathToFile PATH del archivo.
+         * @param string $str_fileType TIPO de archivo.
          */
         protected function __construct ( $str_pathToFile, $str_fileType ) {
             
@@ -65,7 +65,7 @@
 
         /**
          * Getter del atributo str_pathToFile.
-         * @return String atributo str_pathToFile.
+         * @return string atributo str_pathToFile.
          * @author Varela Vargas Leandro.
          */
         public final function getPathToFile() {
@@ -74,7 +74,7 @@
 
         /**
          * Getter del atributo str_fileType.
-         * @return String atributo str_fileType.
+         * @return string atributo str_fileType.
          * @author Varela Vargas Leandro.
          */
         public final function getFileType() {
@@ -91,14 +91,15 @@
 
         /**
          * Función que permite la creación u apertura del archivo (de ser posible).
-         * @param String $str_mode modo en el que el archivo se abrirá.
+         * @param string $str_mode modo en el que el archivo se abrirá.
          * @return bool TRUE en caso de éxito. Caso contrario FALSE.
          * @author Varela Vargas Leandro.
          */
         protected final function create_openFile( $str_mode ) {
             
-            if ( isset($this->file) && $this->file instanceof resource )
+            if ( isset($this->file) ) {
                 fclose($this->file);
+            }
 
             $this->str_mode = $str_mode;
             $this->file = fopen($this->str_pathToFile, $str_mode);
@@ -115,17 +116,14 @@
         }
 
         /**
-         * Función que permitirá agregar una línea sí, solo sí el archivo está en modo Write o Append.
-         * @param String $str_line línea a agregar. NO debe incluir el salto de línea.
+         * Función que permitirá agregar una línea de ser posible.
+         * @param string $str_line línea a agregar. NO debe incluir el salto de línea.
          * @param int $int_length cantidad de caracteres a ser agregados.
          * @return bool TRUE si se pudo agregar. FALSE caso contrario.
          * @author Varela Vargas Leandro.
          */
         public final function write_appendLine( $str_line, $int_length = null ) {
-            if ( isset($this->file) && $this->mode != 'r' )
-                fputs($this->file, $str_line . "\n", $int_length);
-            else
-                throw new Exception("El archivo no se abrió.");
+            fputs($this->file, $str_line . "\n", $int_length);
         }
 
         /**
@@ -134,10 +132,20 @@
          * @author Varela Vargas Leandro.
          */
         protected final function readFile() {
-            $ret = file( $this->str_pathToFile, FILE_IGNORE_NEW_LINES );
+            $ret = file( $this->str_pathToFile );
             $this->file_lines = count($ret);
 
             return $ret;
+        }
+
+        /**
+         * Función que permitirá sobreescribir un archivo completo.
+         * @param mixed  $data datos a imprimir en el documento.
+         * @return bool TRUE si pudo realizar la operación. FALSE caso contrario.
+         * @author Varela Vargas Leandro.
+         */
+        protected final function writeFile($data) {
+            file_put_contents( $this->str_pathToFile, $data );
         }
 
         /**
@@ -151,6 +159,7 @@
 
         /**
          * Función que permitirá, de ser posible, la sobreescritura de una línea dada.
+         * NO USAR PARA ARCHIVOS GRANDES.
          * @param int $line_nr número de línea, comenzando en línea 0.
          * @param string $str nuevo valor de línea.
          * @return bool TRUE si se ha logrado sobreescribir la línea. FALSE caso contrario.
@@ -159,17 +168,13 @@
         protected final function rewriteLine($line_nr, $str) {
             $lines_count = 0;
             $ret = false;
-            $this->readFile();
-            $this->create_openFile("w");
-            $this->rewind();
-
-            if ( $this->file_lines > $line_nr ) { // Si la cantidad de líneas del fichero es mayor a la línea deseada...
-                while ( $line_nr > $lines_count ) { // Adelantamos el cursor a otra línea.
-                    fgets($this->file);
-                }
-                
-                $ret = fwrite($this->file, $str);
+            $lines = $this->readFile();
+            
+            if ( count($lines) >= $line_nr  ) {
+                unset($lines[$line_nr]);
+                $this->writeFile($lines);
             }
+            
             return $ret > 0;
         }
 
