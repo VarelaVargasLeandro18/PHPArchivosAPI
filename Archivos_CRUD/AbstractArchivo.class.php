@@ -178,6 +178,18 @@
             return $ret > 0;
         }
 
+        /**
+         * Función que permitirá encontrar una línea que tenga una cadena de caracteres determinada.
+         * Devuelve la primer coincidencia.
+         * @param string $str Cadena a buscar.
+         * @return int Número de línea que contenga la cadena de caracteres especificada.
+         * @author Varela Vargas Leandro.
+         */
+        protected final function findNrLineWithStr($str) {
+            $file_array = $this->readFile();
+            return array_search($str, $file_array);
+        }
+
     }
 
 ?>
