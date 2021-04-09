@@ -31,6 +31,18 @@
             return $this->deleteLine($nrLine);
         }
 
+        public function readAllOBJ() {
+            $arr = $this->readFile();
+            $ret = array();
+
+            foreach ( $arr as $key => $val ) {
+                $aux = json_decode($val);
+                array_push($ret, $aux);
+            }
+            
+            return $ret;
+        }
+
     }
 
 ?>
