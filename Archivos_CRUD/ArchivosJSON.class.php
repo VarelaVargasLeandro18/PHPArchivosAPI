@@ -20,6 +20,10 @@
             return $ret;
         }
 
+        public function readOBJwithValue($attrib) {
+            
+        }
+
     }
 
 ?>
