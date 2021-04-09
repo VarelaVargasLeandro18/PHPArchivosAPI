@@ -23,11 +23,12 @@
         public function readOBJwithValue($value) {
             $arr_file = $this->readFile();
             $nrLine = $this->findNrLineWithStr($value);
-            return ($nrLine) ? $arr_file[$nrLine] : false;
+            return ($nrLine !== FALSE) ? $arr_file[$nrLine] : false;
         }
 
         public function deleteOBJwithValue($value) {
-            
+            $nrLine = $this->findNrLineWithStr($value);
+            return $this->deleteLine($nrLine);
         }
 
     }

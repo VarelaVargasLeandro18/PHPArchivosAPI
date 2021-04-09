@@ -201,7 +201,7 @@
 
         protected final function deleteLine($line_nr) {
             $lines_count = 0;
-            $ret = false;
+            $ret = FALSE;
             $lines = $this->readFile();
             
             if ( count($lines) >= $line_nr  ) {
