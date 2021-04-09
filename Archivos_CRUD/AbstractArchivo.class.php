@@ -172,10 +172,10 @@
             
             if ( count($lines) >= $line_nr  ) {
                 unset($lines[$line_nr]);
-                $this->writeFile($lines);
+                $ret = $this->writeFile($lines);
             }
             
-            return $ret > 0;
+            return $ret;
         }
 
         /**
