@@ -198,6 +198,25 @@
             return $ret;
         }
 
+        /**
+         * Función que permitirá borrar una línea del archivo.
+         * @param int $line_nr
+         * @return bool TRUE si pudo efectuarse la operación.
+         * @author Varela Vargas Leandro.
+         */
+        protected final function deleteLine($line_nr) {
+            $lines_count = 0;
+            $ret = false;
+            $lines = $this->readFile();
+            
+            if ( count($lines) >= $line_nr  ) {
+                unset($lines[$line_nr]);
+                $this->writeFile($lines);
+            }
+            
+            return $ret > 0;
+        }
+
     }
 
 ?>
