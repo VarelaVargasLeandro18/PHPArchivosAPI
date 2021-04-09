@@ -1,11 +1,22 @@
 <?php
 
     require_once 'AbstractArchivo.class.php';
+    require_once 'iArchivosOBJ.php';
 
     class ArchivoJSON extends AbstractArchivo implements iArchivosOBJ {
         
+        /**
+         * Función constructora de la clase.
+         * @param string $str_pathToFile
+         * @author Varela Vargas Leandro
+         */
         public function __construct($str_pathToFile) {
             parent::__construct($str_pathToFile, "json");
+        }
+
+        public function createFile() {
+            $this->create_openFile('w');
+            $this->closeFile();
         }
         
         public function insertOBJ($obj) {
@@ -36,7 +47,7 @@
             $ret = array();
 
             foreach ( $arr as $key => $val ) {
-                $aux = json_decode($val);
+                $aux = json_decode($val, TRUE);
                 array_push($ret, $aux);
             }
             
