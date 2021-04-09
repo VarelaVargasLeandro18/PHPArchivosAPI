@@ -172,6 +172,7 @@
             
             if ( count($lines) >= $line_nr  ) {
                 unset($lines[$line_nr]);
+                $lines[$line_nr] = $str;
                 $ret = $this->writeFile($lines);
             }
             
@@ -195,6 +196,19 @@
                     break;
                 }
             }
+            return $ret;
+        }
+
+        protected final function deleteLine($line_nr) {
+            $lines_count = 0;
+            $ret = false;
+            $lines = $this->readFile();
+            
+            if ( count($lines) >= $line_nr  ) {
+                unset($lines[$line_nr]);
+                $ret = $this->writeFile($lines);
+            }
+            
             return $ret;
         }
 
