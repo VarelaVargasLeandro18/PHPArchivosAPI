@@ -112,7 +112,13 @@
          * @author Varela Vargas Leandro.
          */
         protected final function closeFile() {
-            return fclose($this->file);
+            if (fclose($this->file)) {
+                unset($this->file);
+                return TRUE;
+            }
+            else
+                return FALSE;
+            
         }
 
         /**
