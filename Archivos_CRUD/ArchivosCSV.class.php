@@ -1,5 +1,8 @@
 <?php
 
+    require_once "../iArchivosOBJ.php";
+    require_once "../AbstractArchivo.class.php";
+
     class ArchivosCSV extends AbstractArchivo implements iArchivosOBJ {
 
         private $tableHeader;
@@ -30,7 +33,8 @@
             $ret = FALSE;
 
             if ( isset($obj) ) {
-                $ret = fputcsv($this->getFile(),
+                $this->create_openFile('a');
+                $ret = fputcsv( $this->getFile(),
                                 $obj);
             }
             
@@ -40,33 +44,36 @@
         public function readOBJwithValue($value) {
             $ret = NULL;
             $arr_file = $this->readFile();
-            $lineFileOBJ = $this->findNrLineWithStr($value);
+
+            $nameAttrib = $this->obtenerNombreAtributo($value);
+            $valueAttrib = $this->obtenerValorAtributo($value);
+
+            $lineFileOBJ = $this->findNrLineWithStr($valueAttrib);
+            
             $ret = (isset($arr_file) && 
                     $lineFileOBJ !== FALSE ) ? 
                     $arr_file[$lineFileOBJ] : NULL;
 
             if ( $lineFileOBJ !== FALSE && 
-                    isset($this->header) &&
+                    isset($this->tableHeader) &&
                     isset($ret) ) { // Si se encuentra una coincidencia...
-
-                $attribs = strtoupper($this->tableHeader);
+                
+                $attribs = strtoupper(implode(',', $this->tableHeader));
                 $attribsArr = str_getcsv($attribs); // Separamos los valores del header.
 
-                $valueToUpper = strtoupper($value);
+                $nameAttribToUpper = strtoupper($nameAttrib);
+                $valueToUpper = strtoupper($valueAttrib);
 
-                $posEndAtt = strpos($valueToUpper, ":");
-                $attribToUpper = substr($valueToUpper, 0, $posEndAtt);
-                $attribToUpper = str_replace($attribToUpper, "\"", ''); 
-                // Obtenemos el NOMBRE del atributo pedido.
-
-                $posStartVal = $posEndAtt + 1;
-                $valueToUpper = substr($valueToUpper, $posStartVal);
-                // Obtenemos el VALOR del atributo pedido.
-
-                $keyAttrib = array_search($attribToUpper, $attribsArr);
+                $keyAttrib = array_search($nameAttribToUpper, $attribsArr);
                 // Buscamos que el NOMBRE del atributo
                 // se encuentre en el array de atributos y obtenemos su posicion.
-                
+                echo "<br/>";
+                var_dump($attribsArr);
+                echo "<br/>";
+                var_dump($keyAttrib);
+                echo "<br/>";
+                var_dump($nameAttribToUpper);
+
                 // A continuación comparamos que el valor que tiene el objeto
                 // en la posición del $keyAttrib coincida con $valueToUpper
                 if ( $keyAttrib !== FALSE ) {
@@ -77,7 +84,44 @@
                 }
 
             } 
+
+            $ret = (isset($ret)) ? explode(",", $ret) : NULL;
             
+            return $ret;
+        }
+
+        private function obtenerNombreAtributo($attribValue) {
+            $both = ($attribValue);
+
+            $posEndAtt = strpos($both, ":");
+            $attribToUpper = substr($both, 0, $posEndAtt);
+            var_dump($attribToUpper);
+            $attribToUpper = str_replace('"', '', $attribToUpper);
+            var_dump($attribToUpper);
+            // Obtenemos el NOMBRE del atributo pedido.
+            return $attribToUpper;
+        }
+
+        private function obtenerValorAtributo($attribValue) {
+            $both = ($attribValue);
+            $posEndAtt = strpos($both, ":");
+            $posStartVal = $posEndAtt + 1;
+            $valueToUpper = substr($attribValue, $posStartVal);
+            // Obtenemos el VALOR del atributo pedido.
+            return $valueToUpper;
+        }
+
+        public function deleteOBJwithValue($value){}
+
+        public function readAllOBJ(){
+            $arr = $this->readfile();
+            $ret = array();
+
+            foreach ( $arr as $key => $val ) {
+                $aux = str_getcsv($val);
+                array_push($ret, $aux);
+            }
+
             return $ret;
         }
 
