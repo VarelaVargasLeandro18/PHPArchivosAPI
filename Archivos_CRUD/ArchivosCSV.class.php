@@ -16,6 +16,11 @@
             $this->tableHeader = $tableHeader;
         }
 
+        public function createFile() {
+            $this->create_openFile('w');
+            $this->closeFile();
+        }
+        
     }
 
 ?>
