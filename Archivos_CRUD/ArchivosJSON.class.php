@@ -34,7 +34,8 @@
         public function readOBJwithValue($value) {
             $arr_file = $this->readFile();
             $nrLine = $this->findNrLineWithStr($value);
-            return ($nrLine !== FALSE) ? $arr_file[$nrLine] : false;
+            $ret = json_decode($arr_file[$nrLine], TRUE);
+            return ($nrLine !== FALSE) ? $ret : NULL;
         }
 
         public function deleteOBJwithValue($value) {
