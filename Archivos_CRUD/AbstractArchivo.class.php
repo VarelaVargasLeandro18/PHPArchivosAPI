@@ -82,10 +82,14 @@
         }
 
         /**
-         * Getter del atributo file_lines.
-         * @return int atributo file_lines.
+         * Getter del atributo $file.
+         * @return resource $file.
+         * @access protected
          * @author Varela Vargas Leandro.
          */
+        protected function getFile() {
+            return $this->file;
+        }
 
         // ========= FIN GETTERS =========
 

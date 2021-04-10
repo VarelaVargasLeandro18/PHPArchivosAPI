@@ -2,7 +2,6 @@
 
     class ArchivosCSV extends AbstractArchivo implements iArchivosOBJ {
 
-
         private $tableHeader;
 
         /**
@@ -18,9 +17,27 @@
 
         public function createFile() {
             $this->create_openFile('w');
+            
+            if ( isset($this->tableHeader) ) {
+                fputcsv($this->getFile(),
+                        $this->tableHeader);
+            }
+                
             $this->closeFile();
         }
         
+
+        public function insertOBJ($obj) {
+            $ret = FALSE;
+
+            if ( isset($obj) ) {
+                $ret = fputcsv($this->getFile(),
+                                $obj);
+            }
+            
+            return $ret > 0;
+        }
+
     }
 
 ?>
