@@ -47,7 +47,7 @@
             $lineNr = $this->buscarLineaPorValor($value, $arr);
 
             $lineWithValue = ( isset($lineNr) ) ? $arr[$lineNr] : NULL;
-            $ret = (isset($lineWithValue)) ? explode(",", $ret) : NULL;
+            $ret = (isset($lineWithValue)) ? explode(",", $lineWithValue) : NULL;
             
             return $ret;
         }
@@ -77,9 +77,7 @@
 
             $posEndAtt = strpos($both, ":");
             $attribToUpper = substr($both, 0, $posEndAtt);
-            var_dump($attribToUpper);
             $attribToUpper = str_replace('"', '', $attribToUpper);
-            var_dump($attribToUpper);
             // Obtenemos el NOMBRE del atributo pedido.
             return $attribToUpper;
         }
