@@ -43,50 +43,32 @@
 
         public function readOBJwithValue($value) {
             $ret = NULL;
-            $arr_file = $this->readFile();
+            $arr = NULL;
+            $lineNr = $this->buscarLineaPorValor($value, $arr);
 
-            $nameAttrib = $this->obtenerNombreAtributo($value);
-            $valueAttrib = $this->obtenerValorAtributo($value);
-
-            $lineFileOBJ = $this->findNrLineWithStr($valueAttrib);
+            $lineWithValue = ( isset($lineNr) ) ? $arr[$lineNr] : NULL;
+            $ret = (isset($lineWithValue)) ? explode(",", $ret) : NULL;
             
-            $ret = (isset($arr_file) && 
-                    $lineFileOBJ !== FALSE ) ? 
-                    $arr_file[$lineFileOBJ] : NULL;
+            return $ret;
+        }
 
-            if ( $lineFileOBJ !== FALSE && 
-                    isset($this->tableHeader) &&
-                    isset($ret) ) { // Si se encuentra una coincidencia...
-                
-                $attribs = strtoupper(implode(',', $this->tableHeader));
-                $attribsArr = str_getcsv($attribs); // Separamos los valores del header.
+        public function deleteOBJwithValue($value){
+            $arr = NULL;
+            $lineNr = $this->buscarLineaPorValor($value, $arr);
 
-                $nameAttribToUpper = strtoupper($nameAttrib);
-                $valueToUpper = strtoupper($valueAttrib);
+            if ( isset($lineNr) )
+                $this->deleteLine($lineNr);
+        }
 
-                $keyAttrib = array_search($nameAttribToUpper, $attribsArr);
-                // Buscamos que el NOMBRE del atributo
-                // se encuentre en el array de atributos y obtenemos su posicion.
-                echo "<br/>";
-                var_dump($attribsArr);
-                echo "<br/>";
-                var_dump($keyAttrib);
-                echo "<br/>";
-                var_dump($nameAttribToUpper);
+        public function readAllOBJ(){
+            $arr = $this->readfile();
+            $ret = array();
 
-                // A continuación comparamos que el valor que tiene el objeto
-                // en la posición del $keyAttrib coincida con $valueToUpper
-                if ( $keyAttrib !== FALSE ) {
-                    $retValue = $ret[$keyAttrib];
-                    $retValueStr = '' . $retValue;
-                    $retValueStr = strtoupper($retValueStr);
-                    $ret = ($retValueStr == $valueToUpper) ? $ret : NULL;
-                }
+            foreach ( $arr as $key => $val ) {
+                $aux = str_getcsv($val);
+                array_push($ret, $aux);
+            }
 
-            } 
-
-            $ret = (isset($ret)) ? explode(",", $ret) : NULL;
-            
             return $ret;
         }
 
@@ -111,18 +93,43 @@
             return $valueToUpper;
         }
 
-        public function deleteOBJwithValue($value){}
+        private function buscarLineaPorValor($value, &$fileContent) {
+            $arr_file = $this->readFile();
+            $nameAttrib = $this->obtenerNombreAtributo($value);
+            $valueAttrib = $this->obtenerValorAtributo($value);
 
-        public function readAllOBJ(){
-            $arr = $this->readfile();
-            $ret = array();
+            $lineFileOBJ = $this->findNrLineWithStr($valueAttrib);
+            
+            $ret = (isset($arr_file) && 
+                    $lineFileOBJ !== FALSE ) ? 
+                    $arr_file[$lineFileOBJ] : NULL;
 
-            foreach ( $arr as $key => $val ) {
-                $aux = str_getcsv($val);
-                array_push($ret, $aux);
-            }
+            if ( isset($this->tableHeader) &&
+                    isset($ret) ) { // Si se encuentra una coincidencia y el csv tiene header...
+                
+                $attribsHeader = strtoupper(implode(',', $this->tableHeader));
+                $attribsArrHeader = str_getcsv($attribsHeader); // Separamos los valores del header.
 
-            return $ret;
+                $nameAttribToUpper = strtoupper($nameAttrib);
+                $valueToUpper = strtoupper($valueAttrib);
+
+                $indexAttribHeader = array_search($nameAttribToUpper, $attribsArrHeader);
+                // Buscamos que el NOMBRE del atributo
+                // se encuentre en el array de atributos y obtenemos su posicion.
+
+                if ( $indexAttribHeader !== FALSE ) {
+                    $retValue = $ret[$indexAttribHeader];
+                    $retValueStr = '' . $retValue;
+                    $retValueStr = strtoupper($retValueStr);
+                    $ret = ($retValueStr == $valueToUpper) ? $ret : NULL;
+
+                    $fileContent = $arr_file; 
+                }
+                // Comparamos que el valor que tiene el objeto
+                // en la posición del $keyAttrib coincida con $valueToUpper
+            } 
+
+            return $lineFileOBJ;
         }
 
     }
